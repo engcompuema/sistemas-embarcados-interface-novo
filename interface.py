@@ -4,19 +4,43 @@ import tkinter
 from tkinter import *
 
 
-# Funcões
+# Funcões       
+
 def request_api():
-    req = requests.get("https://monitoramento-embarcado.herokuapp.com/monitoramento/HPR-1130")
+    #Input da Placa
+    placa = input_placa.get().upper()
+    
+    #req = requests.get("https://monitoramento-embarcado.herokuapp.com/monitoramento/" + placa)
+    req = requests.get("http://172.17.32.31:8080/monitoramento/veiculo/" + placa)
+    
     infos = req.json()
-    placa = StringVar(value=infos['data']['placa'])
+
+    #placa = StringVar(value=infos['data']['placa'])
     status = StringVar(value=infos['data']['status'])
 
-    input_placa["textvariable"] = placa
+    #input_placa["textvariable"] = placa
     input_statusveic["textvariable"] = status
+
+
+def status_conect():
+    req = requests.get("http://172.17.32.31:8080/monitoramento/veiculo/")
+    
+    if req.status_code == 404 or req.status_code == 10065:
+        lbl_statusMode["text"] = "OFF"
+        lbl_statusMode["fg"] = "red"
+    else:
+        lbl_statusMode["text"] = "ON"
+        lbl_statusMode["fg"] = "green"
+
+
 
 def inicia_interface():
     global input_placa
     global input_statusveic
+    global lbl_statusMode
+    
+    # Teste conexão
+    #status_conect()
 
     wd = tkinter.Tk()
     wd.title("Sistema de Processamento Veicular")
@@ -26,18 +50,18 @@ def inicia_interface():
     lbl_nomeImg.grid(row=0, column=0, sticky=W, padx=5, pady=3)
 
     lbl_espacoImg = tkinter.Label(wd, bg="white", height=25, width=65)
-    lbl_espacoImg.grid(row=1, column=0, padx=10, pady=10, columnspan=2, rowspan=4)
+    lbl_espacoImg.grid(row=1, column=0, padx=10,pady=10, columnspan=2, rowspan=4)
 
     lbl_statusServ = tkinter.Label(wd, text="Status do Serviço: ",  font=16)
     lbl_statusServ.grid(row=1, column=3, padx=10, sticky=NW)
 
-    lbl_statusMode = tkinter.Label(wd, font=14, text="ON", fg="green")
+    lbl_statusMode = tkinter.Label(wd, font=14)
     lbl_statusMode.grid(row=1, column=4, sticky=NW)
 
     lbl_placa = tkinter.Label(wd, text="Placa: ",  font=16)
     lbl_placa.grid(row=2, column=3, padx=10, sticky=NW)
 
-    input_placa = tkinter.Entry(wd, state=DISABLED)
+    input_placa = tkinter.Entry(wd)
     input_placa.grid(row=2, column=4, sticky=NW)
 
     lbl_prop = tkinter.Label(wd, text="Proprietário: ",  font=16)
@@ -62,4 +86,7 @@ def inicia_interface():
 
     wd.mainloop()
 
+    
+
+# Função Principal
 inicia_interface()
