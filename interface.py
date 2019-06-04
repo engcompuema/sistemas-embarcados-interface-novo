@@ -9,7 +9,6 @@ from tkinter import filedialog
 from PIL import ImageTk, Image
 
 
-
 # Funcões       
 def request_api(placa):
 
@@ -78,6 +77,8 @@ def processamento(imagemCinza, imagemOriginal):
 
     #Binariza imagem
     ret, imagemAumentada = cv2.threshold(imagemAumentada, 105, 255, cv2.THRESH_BINARY)
+   # ret, imagemAumentada = cv2.threshold(imagemAumentada, 120, 255, cv2.THRESH_BINARY)
+
 
     #Aplicação do filtro gaussiano, com kernel de 5 x 5
     imagemAumentada = cv2.GaussianBlur(imagemAumentada, (5, 5), 0)
@@ -93,9 +94,9 @@ def processamento(imagemCinza, imagemOriginal):
 
     #Recupero a placa e faço a leitura da string da mesma e a printo
     saida = pytesseract.image_to_string(imagem)
-
+    print(saida)
     placaReplace = saida.replace(":","-")
-
+   # placaReplace = saida
     placa = StringVar(value=placaReplace)
 
     #Requisição API
