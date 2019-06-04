@@ -5,7 +5,6 @@ from tkinter import *
 
 
 # Funcões       
-
 def request_api():
     #Input da Placa
     placa = input_placa.get().upper()
